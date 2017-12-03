@@ -1,0 +1,14 @@
+{
+  "name": "pie-gen",
+  "version": "0.0.1",
+  "description": "Pie chart generator",
+  "main": "dist/pie-gen-js/pie-gen.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anton Zemlyansky",
+  "license": "ISC"
+}

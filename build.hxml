@@ -1,0 +1,8 @@
+-cp src
+Lib
+--each
+-python dist/pie-gen-py/pie-gen.py
+--next
+-js dist/pie-gen-js/pie-gen.js
+--next
+-php dist/pie-gen-php/
