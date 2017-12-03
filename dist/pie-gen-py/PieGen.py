@@ -32,7 +32,21 @@ class Enum:
 
 class PieChartGen:
 	_hx_class_name = "PieChartGen"
-	_hx_statics = ["SIZE", "RADIUS", "calculateArcs", "calculateMiddlePoints", "hexToTriad", "calculateOneColor", "calculateColors", "run"]
+	_hx_statics = ["SIZE", "RADIUS", "normalizeValues", "calculateArcs", "calculateMiddlePoints", "hexToTriad", "calculateOneColor", "calculateColors", "create"]
+
+	@staticmethod
+	def normalizeValues(values):
+		sum = 0
+		_g = 0
+		while (_g < len(values)):
+			v = (values[_g] if _g >= 0 and _g < len(values) else None)
+			_g = (_g + 1)
+			sum = (sum + v)
+		def _hx_local_3():
+			def _hx_local_2(v1):
+				return ((v1 * 100) / sum)
+			return list(map(_hx_local_2,values))
+		return _hx_local_3()
 
 	@staticmethod
 	def calculateArcs(values):
@@ -144,8 +158,20 @@ class PieChartGen:
 		return newColors
 
 	@staticmethod
-	def run(arr):
-		return Reflect.field(arr,"length")
+	def create(values,params):
+		colors = []
+		params = python_Lib.dictToAnon(params)
+		mask = (((((("\n      <mask id=\"donut-mask\">\n        <rect width=\"100%\" height=\"100%\" fill=\"white\"></rect>\n        <circle r=" + str((130 * Reflect.field(params,"innerRadiusSize")))) + " cx=") + str(150.)) + " cy=") + str(150.)) + " fill=\"black\"></circle>\n      </mask>\n    ")
+		groups = ""
+		_g1 = 0
+		_g = Reflect.field(values,"length")
+		while (_g1 < _g):
+			i = _g1
+			_g1 = (_g1 + 1)
+			g = "\n        <g>\n          <path mask=\"url(#donut-mask)\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\"></text>\n        </g>\n      "
+			groups = (("null" if groups is None else groups) + ("null" if g is None else g))
+		output = (((((((("\n      <svg viewBox=\"0 0 " + str(300)) + " ") + str(300)) + "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\n        ") + ("null" if mask is None else mask)) + "\n        ") + ("null" if groups is None else groups)) + "\n      </svg>\n    ")
+		return output
 
 
 class Reflect:
@@ -714,6 +740,15 @@ class python_HaxeIterator:
 			self.checked = True
 		return self.has
 
+
+
+class python_Lib:
+	_hx_class_name = "python.Lib"
+	_hx_statics = ["dictToAnon"]
+
+	@staticmethod
+	def dictToAnon(v):
+		return _hx_AnonObject(v.copy())
 
 
 class python_internal_ArrayImpl:

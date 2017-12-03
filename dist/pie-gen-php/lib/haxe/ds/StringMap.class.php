@@ -1,10 +1,39 @@
 <?php
 
 class haxe_ds_StringMap implements haxe_IMap, IteratorAggregate{
-	public function __construct(){}
+	public function __construct() {
+		if(!php_Boot::$skip_constructor) {
+		$this->h = array();
+	}}
 	public $h;
+	public function get($key) {
+		if(array_key_exists($key, $this->h)) {
+			return $this->h[$key];
+		} else {
+			return null;
+		}
+	}
+	public function keys() {
+		return new _hx_array_iterator(array_map("strval", array_keys($this->h)));
+	}
 	public function iterator() {
 		return new _hx_array_iterator(array_values($this->h));
+	}
+	public function toString() {
+		$s = "{";
+		$it = $this->keys();
+		$__hx__it = $it;
+		while($__hx__it->hasNext()) {
+			unset($i);
+			$i = $__hx__it->next();
+			$s .= _hx_string_or_null($i);
+			$s .= " => ";
+			$s .= Std::string($this->get($i));
+			if($it->hasNext()) {
+				$s .= ", ";
+			}
+		}
+		return _hx_string_or_null($s) . "}";
 	}
 	public function getIterator() {
 		return $this->iterator();
@@ -19,5 +48,5 @@ class haxe_ds_StringMap implements haxe_IMap, IteratorAggregate{
 		else
 			throw new HException('Unable to call <'.$m.'>');
 	}
-	function __toString() { return 'haxe.ds.StringMap'; }
+	function __toString() { return $this->toString(); }
 }

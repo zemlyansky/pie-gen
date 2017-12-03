@@ -5,7 +5,19 @@ HxOverrides.cca = function(s,index) {
 	if(x != x) return undefined;
 	return x;
 };
-var PieChartGen = $hx_exports.generate = function() { };
+var PieChartGen = function() { };
+PieChartGen.normalizeValues = function(values) {
+	var sum = 0;
+	var _g = 0;
+	while(_g < values.length) {
+		var v = values[_g];
+		++_g;
+		sum += v;
+	}
+	return values.map(function(v1) {
+		return v1 * 100 / sum;
+	});
+};
 PieChartGen.calculateArcs = function(values) {
 	var a = 100;
 	var ds = [];
@@ -70,8 +82,19 @@ PieChartGen.calculateColors = function(baseColors,valuesLength) {
 	}
 	return newColors;
 };
-PieChartGen.run = function(arr) {
-	return arr.length;
+PieChartGen.create = $hx_exports.create = function(values,params) {
+	var colors = [];
+	var mask = "\n      <mask id=\"donut-mask\">\n        <rect width=\"100%\" height=\"100%\" fill=\"white\"></rect>\n        <circle r=" + 130 * params.innerRadiusSize + " cx=" + 150. + " cy=" + 150. + " fill=\"black\"></circle>\n      </mask>\n    ";
+	var groups = "";
+	var _g1 = 0;
+	var _g = values.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var g = "\n        <g>\n          <path mask=\"url(#donut-mask)\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\"></text>\n        </g>\n      ";
+		groups += g;
+	}
+	var output = "\n      <svg viewBox=\"0 0 " + 300 + " " + 300 + "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\n        " + mask + "\n        " + groups + "\n      </svg>\n    ";
+	return output;
 };
 var Std = function() { };
 Std.parseInt = function(x) {

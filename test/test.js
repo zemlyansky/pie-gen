@@ -1,3 +1,3 @@
-var PieGen = require('./dist/lib.js')
+var PieGen = require('../dist/pie-gen-js/pie-gen.js')
 console.log(PieGen)
-console.log(PieGen.generate([15, 45, 40]))
+console.log(PieGen.create([15, 45, 40], {innerRadiusSize: 0.3}))

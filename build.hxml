@@ -1,7 +1,7 @@
 -cp src
 Lib
 --each
--python dist/pie-gen-py/pie-gen.py
+-python dist/pie-gen-py/PieGen.py
 --next
 -js dist/pie-gen-js/pie-gen.js
 --next

@@ -4,6 +4,19 @@ class PieChartGen {
 	public function __construct(){}
 	static $SIZE = 300;
 	static $RADIUS = 130;
+	static function normalizeValues($values) {
+		$sum = 0;
+		{
+			$_g = 0;
+			while($_g < $values->length) {
+				$v = $values[$_g];
+				++$_g;
+				$sum += $v;
+				unset($v);
+			}
+		}
+		return $values->map(array(new _hx_lambda(array(&$sum, &$values), "PieChartGen_0"), 'execute'));
+	}
 	static function calculateArcs($values) {
 		$a = 100;
 		$ds = (new _hx_array(array()));
@@ -57,7 +70,7 @@ class PieChartGen {
 		return Std::int($c1 + ($c2 - $c1) * $shift);
 	}
 	static function calculateColors($baseColors, $valuesLength) {
-		$rgbColors = $baseColors->map(array(new _hx_lambda(array(&$baseColors, &$valuesLength), "PieChartGen_0"), 'execute'));
+		$rgbColors = $baseColors->map(array(new _hx_lambda(array(&$baseColors, &$valuesLength), "PieChartGen_1"), 'execute'));
 		$newColors = (new _hx_array(array()));
 		{
 			$_g1 = 0;
@@ -79,16 +92,37 @@ class PieChartGen {
 		}
 		return $newColors;
 	}
-	static function run($arr) {
+	static function create($values, $params) {
+		$colors = (new _hx_array(array()));
 		{
-			$a = $arr;
-			$arr = new _hx_array($a);
+			$a = $values;
+			$values = new _hx_array($a);
 		}
-		return _hx_len($arr);
+		$newparams = php_Lib::hashOfAssociativeArray($params);
+		haxe_Log::trace($newparams->toString(), _hx_anonymous(array("fileName" => "Lib.hx", "lineNumber" => 170, "className" => "PieChartGen", "methodName" => "create")));
+		$mask = "\x0A      <mask id=\"donut-mask\">\x0A        <rect width=\"100%\" height=\"100%\" fill=\"white\"></rect>\x0A        <circle r=" . _hx_string_rec(130 * $params->innerRadiusSize, "") . " cx=" . _hx_string_rec(150., "") . " cy=" . _hx_string_rec(150., "") . " fill=\"black\"></circle>\x0A      </mask>\x0A    ";
+		$groups = "";
+		{
+			$_g1 = 0;
+			$_g = _hx_len($values);
+			while($_g1 < $_g) {
+				$i = $_g1++;
+				$g = "\x0A        <g>\x0A          <path mask=\"url(#donut-mask)\"></path>\x0A          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\"></text>\x0A        </g>\x0A      ";
+				$groups .= _hx_string_or_null($g);
+				unset($i,$g);
+			}
+		}
+		$output = "\x0A      <svg viewBox=\"0 0 " . _hx_string_rec(300, "") . " " . _hx_string_rec(300, "") . "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\x0A        " . _hx_string_or_null($mask) . "\x0A        " . _hx_string_or_null($groups) . "\x0A      </svg>\x0A    ";
+		return $output;
 	}
 	function __toString() { return 'PieChartGen'; }
 }
-function PieChartGen_0(&$baseColors, &$valuesLength, $c) {
+function PieChartGen_0(&$sum, &$values, $v1) {
+	{
+		return $v1 * 100 / $sum;
+	}
+}
+function PieChartGen_1(&$baseColors, &$valuesLength, $c) {
 	{
 		return PieChartGen::hexToTriad($c);
 	}

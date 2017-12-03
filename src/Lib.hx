@@ -1,3 +1,5 @@
+// using Lambda;
+
 #if php
   import php.Lib;
 #end
@@ -5,11 +7,27 @@
 typedef Point = {x: Float, y: Float}
 typedef Color = {r: Int, g: Int, b: Int}
 
-@:expose('generate')
 class PieChartGen {
   inline static var SIZE = 300;
   inline static var RADIUS = 130;
 
+  /**
+   * Scale values to have 100% sum
+   * @param {Number[]} values
+   * @returns {Number[]}
+   */
+  private static function normalizeValues
+  (
+    values: Array<Float>
+  )
+  : Array<Float>
+  {
+    var sum: Float = 0;
+    for (v in values) {
+      sum += v;
+    }
+    return values.map(function (v) return v * 100 / sum);
+  }
   /**
    * Calculate 'd' attributes for 'path' svg elements
    * @param {Number[]} values - array of values
@@ -101,9 +119,12 @@ class PieChartGen {
     return Std.int(c1 + (c2 - c1) * shift);
   }
 
+  /**
+   * Interpolates base color to match values length
+   */
   private static function calculateColors
   (
-    baseColors: Array<String>,
+    baseColors: Array<String>, 
     valuesLength: Int
   )
   : Array<Color>
@@ -131,11 +152,56 @@ class PieChartGen {
     return newColors;
   }
 
+  @:expose('create')
+  public static function create
+  (
+    values: Dynamic,
+    params: Dynamic
+  )
+  : String
+  {
+    var colors: Array<Dynamic> = [];
 
-  public static function run(arr: Dynamic) {
+    // Convert native PHP arrays to HAXE types
     #if php
-      arr = php.Lib.toHaxeArray(arr);
+      values = php.Lib.toHaxeArray(values);
+      //params = php.Lib.objectOfAssociativeArray(params);
+      var newparams = php.Lib.hashOfAssociativeArray(params);
+      trace(newparams.colors);
+      //  .map(function (c) return '' + c);
     #end
-    return arr.length;
+    // Convert native Python dict to HAXE object
+    #if python
+      params = python.Lib.dictToAnon(params);
+    #end
+
+    var mask: String = '
+      <mask id="donut-mask">
+        <rect width="100%" height="100%" fill="white"></rect>
+        <circle r=${RADIUS * params.innerRadiusSize} cx=${SIZE / 2} cy=${SIZE / 2} fill="black"></circle>
+      </mask>
+    ';
+
+    var groups: String = '';
+//    var ds: Array<String> = calculateArcs(normalizeValues(values));
+//    var ps: Array<Point> = calculateMiddlePoints(normalizeValues(values), params.innerRadiusSize);
+//    var newColors: Array<Color> = calculateColors(colors, values.length);
+    for (i in 0...values.length) {
+      var g: String = '
+        <g>
+          <path mask="url(#donut-mask)"></path>
+          <text fill="white" stroke="none" text-anchor="middle" font-size="10px" font-family="sans-serif"></text>
+        </g>
+      ';
+      groups += g;
+    }
+    // Final output string that contain SVG code
+    var output: String = '
+      <svg viewBox="0 0 ${SIZE} ${SIZE}" preserveAspectRatio="xMinYMin meet" style="display: inline-block; position: absolute; top: 0px; left: 0px;">
+        ${mask}
+        ${groups}
+      </svg>
+    ';
+    return output;
   }
 }
