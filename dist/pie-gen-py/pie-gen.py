@@ -32,7 +32,7 @@ class Enum:
 
 class PieChartGen:
 	_hx_class_name = "PieChartGen"
-	_hx_statics = ["SIZE", "RADIUS", "calculateArcs", "run"]
+	_hx_statics = ["SIZE", "RADIUS", "calculateArcs", "calculateMiddlePoints", "hexToTriad", "calculateOneColor", "calculateColors", "run"]
 
 	@staticmethod
 	def calculateArcs(values):
@@ -42,12 +42,12 @@ class PieChartGen:
 		def _hx_local_0():
 			v = (Math.PI / 2)
 			return (Math.NaN if (((v == Math.POSITIVE_INFINITY) or ((v == Math.NEGATIVE_INFINITY)))) else python_lib_Math.cos(v))
-		oldX = (151. + ((150 * _hx_local_0())))
+		oldX = (150. + ((130 * _hx_local_0())))
 		oldY = None
 		def _hx_local_1():
 			v1 = (Math.PI / 2)
 			return (Math.NaN if (((v1 == Math.POSITIVE_INFINITY) or ((v1 == Math.NEGATIVE_INFINITY)))) else python_lib_Math.sin(v1))
-		oldY = (151. - ((150 * _hx_local_1())))
+		oldY = (150. - ((130 * _hx_local_1())))
 		totalAngle = 0
 		_g = 0
 		while (_g < len(values)):
@@ -59,16 +59,89 @@ class PieChartGen:
 			def _hx_local_3():
 				v3 = (totalAngle - ((Math.PI / 2)))
 				return (Math.NaN if (((v3 == Math.POSITIVE_INFINITY) or ((v3 == Math.NEGATIVE_INFINITY)))) else python_lib_Math.cos(v3))
-			newX = (151. + ((150 * _hx_local_3())))
+			newX = (150. + ((130 * _hx_local_3())))
 			newY = None
 			def _hx_local_4():
 				v4 = (totalAngle - ((Math.PI / 2)))
 				return (Math.NaN if (((v4 == Math.POSITIVE_INFINITY) or ((v4 == Math.NEGATIVE_INFINITY)))) else python_lib_Math.sin(v4))
-			newY = (151. + ((150 * _hx_local_4())))
-			ds.append((((((((((((((((((("M " + str(oldX)) + " ") + str(oldY)) + " A ") + str(150)) + " ") + str(150)) + " 0 ") + str(((0 if ((angle < Math.PI)) else 1)))) + " 1 ") + str(newX)) + " ") + str(newY)) + " L ") + str(151.)) + " ") + str(151.)) + " Z"))
+			newY = (150. + ((130 * _hx_local_4())))
+			ds.append((((((((((((((((((("M " + str(oldX)) + " ") + str(oldY)) + " A ") + str(130)) + " ") + str(130)) + " 0 ") + str(((0 if ((angle < Math.PI)) else 1)))) + " 1 ") + str(newX)) + " ") + str(newY)) + " L ") + str(150.)) + " ") + str(150.)) + " Z"))
 			oldX = newX
 			oldY = newY
 		return ds
+
+	@staticmethod
+	def calculateMiddlePoints(values,innerRadiusSize):
+		ps = []
+		totalAngle = 0
+		_g = 0
+		while (_g < len(values)):
+			v = (values[_g] if _g >= 0 and _g < len(values) else None)
+			_g = (_g + 1)
+			angle = ((Math.PI * v) / 100)
+			totalAngle = (totalAngle + angle)
+			labelRadius = ((130 * innerRadiusSize) + ((((130 - ((130 * innerRadiusSize)))) / 2)))
+			newX = None
+			def _hx_local_2():
+				v1 = (totalAngle - ((Math.PI / 2)))
+				return (Math.NaN if (((v1 == Math.POSITIVE_INFINITY) or ((v1 == Math.NEGATIVE_INFINITY)))) else python_lib_Math.cos(v1))
+			newX = (150. + ((labelRadius * _hx_local_2())))
+			newY = None
+			def _hx_local_3():
+				v2 = (totalAngle - ((Math.PI / 2)))
+				return (Math.NaN if (((v2 == Math.POSITIVE_INFINITY) or ((v2 == Math.NEGATIVE_INFINITY)))) else python_lib_Math.sin(v2))
+			newY = (150. + ((labelRadius * _hx_local_3())))
+			p = _hx_AnonObject({'x': newX, 'y': newY})
+			ps.append(p)
+			totalAngle = (totalAngle + angle)
+		return ps
+
+	@staticmethod
+	def hexToTriad(hex):
+		cleanHex = None
+		_this = None
+		startIndex = (hex.find("#") + 1)
+		_this = HxString.substring(hex,startIndex,len(hex))
+		cleanHex = list(_this)
+		color = _hx_AnonObject({'r': Std.parseInt((("0x" + HxOverrides.stringOrNull((cleanHex[0] if 0 < len(cleanHex) else None))) + HxOverrides.stringOrNull((cleanHex[1] if 1 < len(cleanHex) else None)))), 'g': Std.parseInt((("0x" + HxOverrides.stringOrNull((cleanHex[2] if 2 < len(cleanHex) else None))) + HxOverrides.stringOrNull((cleanHex[3] if 3 < len(cleanHex) else None)))), 'b': Std.parseInt((("0x" + HxOverrides.stringOrNull((cleanHex[4] if 4 < len(cleanHex) else None))) + HxOverrides.stringOrNull((cleanHex[5] if 5 < len(cleanHex) else None))))})
+		return color
+
+	@staticmethod
+	def calculateOneColor(c1,c2,shift):
+		def _hx_local_2():
+			def _hx_local_1():
+				_hx_local_0 = None
+				try:
+					_hx_local_0 = int((c1 + ((((c2 - c1)) * shift))))
+				except Exception as _hx_e:
+					_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
+					e = _hx_e1
+					_hx_local_0 = None
+				return _hx_local_0
+			return _hx_local_1()
+		return _hx_local_2()
+
+	@staticmethod
+	def calculateColors(baseColors,valuesLength):
+		def _hx_local_0(c):
+			return PieChartGen.hexToTriad(c)
+		rgbColors = list(map(_hx_local_0,baseColors))
+		newColors = []
+		_g1 = 0
+		_g = (valuesLength - 1)
+		while (_g1 < _g):
+			i = _g1
+			_g1 = (_g1 + 1)
+			colorPair = ((i * ((len(baseColors) - 1))) / ((valuesLength - 1)))
+			colorPairNumber = Math.floor(colorPair)
+			colorPairShift = (colorPair - colorPairNumber)
+			color = None
+			if (colorPairNumber == ((len(baseColors) - 1))):
+				color = (rgbColors[colorPairNumber] if colorPairNumber >= 0 and colorPairNumber < len(rgbColors) else None)
+			else:
+				color = _hx_AnonObject({'r': PieChartGen.calculateOneColor((rgbColors[colorPairNumber] if colorPairNumber >= 0 and colorPairNumber < len(rgbColors) else None).r,python_internal_ArrayImpl._get(rgbColors, (colorPairNumber + 1)).r,colorPairShift), 'g': PieChartGen.calculateOneColor((rgbColors[colorPairNumber] if colorPairNumber >= 0 and colorPairNumber < len(rgbColors) else None).g,python_internal_ArrayImpl._get(rgbColors, (colorPairNumber + 1)).g,colorPairShift), 'b': PieChartGen.calculateOneColor((rgbColors[colorPairNumber] if colorPairNumber >= 0 and colorPairNumber < len(rgbColors) else None).b,python_internal_ArrayImpl._get(rgbColors, (colorPairNumber + 1)).b,colorPairShift)})
+			newColors.append(color)
+		return newColors
 
 	@staticmethod
 	def run(arr):
@@ -82,6 +155,82 @@ class Reflect:
 	@staticmethod
 	def field(o,field):
 		return python_Boot.field(o,field)
+
+
+class Std:
+	_hx_class_name = "Std"
+	_hx_statics = ["parseInt", "shortenPossibleNumber", "parseFloat"]
+
+	@staticmethod
+	def parseInt(x):
+		if (x is None):
+			return None
+		try:
+			return int(x)
+		except Exception as _hx_e:
+			_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
+			e = _hx_e1
+			try:
+				prefix = None
+				_this = HxString.substr(x,0,2)
+				prefix = _this.lower()
+				if (prefix == "0x"):
+					return int(x,16)
+				raise _HxException("fail")
+			except Exception as _hx_e:
+				_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
+				e1 = _hx_e1
+				r = None
+				x1 = Std.parseFloat(x)
+				try:
+					r = int(x1)
+				except Exception as _hx_e:
+					_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
+					e2 = _hx_e1
+					r = None
+				if (r is None):
+					r1 = Std.shortenPossibleNumber(x)
+					if (r1 != x):
+						return Std.parseInt(r1)
+					else:
+						return None
+				return r
+
+	@staticmethod
+	def shortenPossibleNumber(x):
+		r = ""
+		_g1 = 0
+		_g = len(x)
+		while (_g1 < _g):
+			i = _g1
+			_g1 = (_g1 + 1)
+			c = None
+			if ((i < 0) or ((i >= len(x)))):
+				c = ""
+			else:
+				c = x[i]
+			_g2 = HxString.charCodeAt(c,0)
+			if (_g2 is not None):
+				if (((((((((((_g2 == 46) or ((_g2 == 57))) or ((_g2 == 56))) or ((_g2 == 55))) or ((_g2 == 54))) or ((_g2 == 53))) or ((_g2 == 52))) or ((_g2 == 51))) or ((_g2 == 50))) or ((_g2 == 49))) or ((_g2 == 48))):
+					r = (("null" if r is None else r) + ("null" if c is None else c))
+				else:
+					break
+			else:
+				break
+		return r
+
+	@staticmethod
+	def parseFloat(x):
+		try:
+			return float(x)
+		except Exception as _hx_e:
+			_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
+			e = _hx_e1
+			if (x is not None):
+				r1 = Std.shortenPossibleNumber(x)
+				if (r1 != x):
+					return Std.parseFloat(r1)
+			return Math.NaN
 
 
 class python_Boot:
@@ -117,7 +266,7 @@ class python_Boot:
 				else:
 					return str(o)
 			except Exception as _hx_e:
-				_hx_e1 = _hx_e
+				_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 				e = _hx_e1
 				return str(o)
 		if isinstance(o,list):
@@ -139,7 +288,7 @@ class python_Boot:
 			if hasattr(o,"toString"):
 				return o.toString()
 		except Exception as _hx_e:
-			_hx_e1 = _hx_e
+			_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 			pass
 		if (python_lib_Inspect.isfunction(o) or python_lib_Inspect.ismethod(o)):
 			return "<function>"
@@ -159,7 +308,7 @@ class python_Boot:
 					fieldsStr = _g1
 					toStr = (("{ " + HxOverrides.stringOrNull(", ".join([x1 for x1 in fieldsStr]))) + " }")
 				except Exception as _hx_e:
-					_hx_e1 = _hx_e
+					_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 					e2 = _hx_e1
 					return "{ ... }"
 				if (toStr is None):
@@ -220,7 +369,7 @@ class python_Boot:
 				if hasattr(o,"__repr__"):
 					return o.__repr__()
 			except Exception as _hx_e:
-				_hx_e1 = _hx_e
+				_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 				pass
 			if hasattr(o,"__str__"):
 				return o.__str__([])
@@ -507,7 +656,7 @@ class python_Boot:
 				return c._hx_super
 			return None
 		except Exception as _hx_e:
-			_hx_e1 = _hx_e
+			_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 			pass
 		return None
 
@@ -555,7 +704,7 @@ class python_HaxeIterator:
 				self.x = self.it.__next__()
 				self.has = True
 			except Exception as _hx_e:
-				_hx_e1 = _hx_e
+				_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 				if isinstance(_hx_e1, StopIteration):
 					s = _hx_e1
 					self.has = False
@@ -650,7 +799,7 @@ class python_internal_ArrayImpl:
 			x.remove(e)
 			return True
 		except Exception as _hx_e:
-			_hx_e1 = _hx_e
+			_hx_e1 = _hx_e.val if isinstance(_hx_e, _HxException) else _hx_e
 			e1 = _hx_e1
 			return False
 
@@ -700,6 +849,22 @@ class python_internal_ArrayImpl:
 			return x[idx]
 		else:
 			return None
+
+
+class _HxException(Exception):
+	_hx_class_name = "_HxException"
+	_hx_fields = ["val"]
+	_hx_methods = []
+	_hx_statics = []
+	_hx_super = Exception
+
+
+	def __init__(self,val):
+		self.val = None
+		message = str(val)
+		super().__init__(message)
+		self.val = val
+
 
 
 class HxOverrides:
@@ -813,7 +978,7 @@ Math.POSITIVE_INFINITY = float("inf")
 Math.NaN = float("nan")
 Math.PI = python_lib_Math.pi
 
-PieChartGen.SIZE = 302
-PieChartGen.RADIUS = 150
+PieChartGen.SIZE = 300
+PieChartGen.RADIUS = 130
 python_Boot.keywords = set(["and", "del", "from", "not", "with", "as", "elif", "global", "or", "yield", "assert", "else", "if", "pass", "None", "break", "except", "import", "raise", "True", "class", "exec", "in", "return", "False", "continue", "finally", "is", "try", "def", "for", "lambda", "while"])
 python_Boot.prefixLength = len("_hx_")

@@ -12,6 +12,9 @@ class Math {
 	static function cos($v) {
 		return cos($v);
 	}
+	static function floor($v) {
+		return (int) floor($v);
+	}
 	function __toString() { return 'Math'; }
 }
 {
