@@ -99,10 +99,10 @@ PieChartGen.create = $hx_exports["create"] = function(values,params) {
 	var _g = values.length;
 	while(_g1 < _g) {
 		var i = _g1++;
-		var g = "\n        <g>\n          <path mask=\"url(#donut-mask)\" fill=\"rgb(" + cs[i].r + ", " + cs[i].g + ", " + cs[i].b + ")\" stroke=\"rgb(" + cs[i].r + ", " + cs[i].g + ", " + cs[i].b + ")\" d=\"" + ds[i] + "\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"" + ps[i].x + "\" y=\"" + (ps[i].y + 5) + "\"></text>\n        </g>\n      ";
+		var g = "\n        <g>\n          <path mask=\"url(#donut-mask)\" fill=\"rgb(" + cs[i].r + ", " + cs[i].g + ", " + cs[i].b + ")\" stroke=\"rgb(" + cs[i].r + ", " + cs[i].g + ", " + cs[i].b + ")\" d=\"" + ds[i] + "\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"" + ps[i].x + "\" y=\"" + (ps[i].y + 5) + "\">" + values[i] + "</text>\n        </g>\n      ";
 		groups += g;
 	}
-	var output = "\n      <svg viewBox=\"0 0 " + 300 + " " + 300 + "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\n        " + mask + "\n        " + groups + "\n      </svg>\n    ";
+	var output = "\n      <svg viewBox=\"0 0 " + 300 + " " + 300 + "\" preserveAspectRatio=\"xMinYMin meet\">\n        " + mask + "\n        " + groups + "\n      </svg>\n    ";
 	return output;
 };
 var Std = function() { };

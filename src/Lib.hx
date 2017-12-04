@@ -207,14 +207,15 @@ class PieChartGen {
       var g: String = '
         <g>
           <path mask="url(#donut-mask)" fill="rgb(${cs[i].r}, ${cs[i].g}, ${cs[i].b})" stroke="rgb(${cs[i].r}, ${cs[i].g}, ${cs[i].b})" d="${ds[i]}"></path>
-          <text fill="white" stroke="none" text-anchor="middle" font-size="10px" font-family="sans-serif" x="${ps[i].x}" y="${ps[i].y + 5}"></text>
+          <text fill="white" stroke="none" text-anchor="middle" font-size="10px" font-family="sans-serif" x="${ps[i].x}" y="${ps[i].y + 5}">${values[i]}</text>
         </g>
       ';
       groups += g;
     }
     // Final output string that contain SVG code
+    //  <svg viewBox="0 0 ${SIZE} ${SIZE}" preserveAspectRatio="xMinYMin meet" style="display: inline-block; position: absolute; top: 0px; left: 0px;">
     var output: String = '
-      <svg viewBox="0 0 ${SIZE} ${SIZE}" preserveAspectRatio="xMinYMin meet" style="display: inline-block; position: absolute; top: 0px; left: 0px;">
+      <svg viewBox="0 0 ${SIZE} ${SIZE}" preserveAspectRatio="xMinYMin meet">
         ${mask}
         ${groups}
       </svg>

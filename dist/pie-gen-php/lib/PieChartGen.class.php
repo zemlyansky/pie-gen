@@ -135,12 +135,12 @@ class PieChartGen {
 			while($_g1 < $_g) {
 				$_g1 = $_g1 + 1;
 				$i = $_g1 - 1;
-				$g = "\x0A        <g>\x0A          <path mask=\"url(#donut-mask)\" fill=\"rgb(" . _hx_string_rec(_hx_array_get($cs, $i)->r, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->g, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->b, "") . ")\" stroke=\"rgb(" . _hx_string_rec(_hx_array_get($cs, $i)->r, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->g, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->b, "") . ")\" d=\"" . _hx_string_or_null($ds[$i]) . "\"></path>\x0A          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"" . _hx_string_rec(_hx_array_get($ps1, $i)->x, "") . "\" y=\"" . _hx_string_rec((_hx_array_get($ps1, $i)->y + 5), "") . "\"></text>\x0A        </g>\x0A      ";
+				$g = "\x0A        <g>\x0A          <path mask=\"url(#donut-mask)\" fill=\"rgb(" . _hx_string_rec(_hx_array_get($cs, $i)->r, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->g, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->b, "") . ")\" stroke=\"rgb(" . _hx_string_rec(_hx_array_get($cs, $i)->r, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->g, "") . ", " . _hx_string_rec(_hx_array_get($cs, $i)->b, "") . ")\" d=\"" . _hx_string_or_null($ds[$i]) . "\"></path>\x0A          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"" . _hx_string_rec(_hx_array_get($ps1, $i)->x, "") . "\" y=\"" . _hx_string_rec((_hx_array_get($ps1, $i)->y + 5), "") . "\">" . _hx_string_or_null($values[$i]) . "</text>\x0A        </g>\x0A      ";
 				$groups = _hx_string_or_null($groups) . _hx_string_or_null($g);
 				unset($i,$g);
 			}
 		}
-		$output = "\x0A      <svg viewBox=\"0 0 " . _hx_string_rec(300, "") . " " . _hx_string_rec(300, "") . "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\x0A        " . _hx_string_or_null($mask) . "\x0A        " . _hx_string_or_null($groups) . "\x0A      </svg>\x0A    ";
+		$output = "\x0A      <svg viewBox=\"0 0 " . _hx_string_rec(300, "") . " " . _hx_string_rec(300, "") . "\" preserveAspectRatio=\"xMinYMin meet\">\x0A        " . _hx_string_or_null($mask) . "\x0A        " . _hx_string_or_null($groups) . "\x0A      </svg>\x0A    ";
 		return $output;
 	}
 	function __toString() { return 'PieChartGen'; }

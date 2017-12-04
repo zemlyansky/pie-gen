@@ -150,9 +150,9 @@ class PieChartGen:
         while (_g1 < _g):
             i = _g1
             _g1 = (_g1 + 1)
-            g = (((((((((((((((((("\n        <g>\n          <path mask=\"url(#donut-mask)\" fill=\"rgb(" + str((cs[i] if i >= 0 and i < len(cs) else None).r)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).g)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).b)) + ")\" stroke=\"rgb(") + str((cs[i] if i >= 0 and i < len(cs) else None).r)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).g)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).b)) + ")\" d=\"") + HxOverrides.stringOrNull((ds[i] if i >= 0 and i < len(ds) else None))) + "\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"") + str((ps[i] if i >= 0 and i < len(ps) else None).x)) + "\" y=\"") + str((((ps[i] if i >= 0 and i < len(ps) else None).y + 5)))) + "\"></text>\n        </g>\n      ")
+            g = (((((((((((((((((((("\n        <g>\n          <path mask=\"url(#donut-mask)\" fill=\"rgb(" + str((cs[i] if i >= 0 and i < len(cs) else None).r)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).g)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).b)) + ")\" stroke=\"rgb(") + str((cs[i] if i >= 0 and i < len(cs) else None).r)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).g)) + ", ") + str((cs[i] if i >= 0 and i < len(cs) else None).b)) + ")\" d=\"") + HxOverrides.stringOrNull((ds[i] if i >= 0 and i < len(ds) else None))) + "\"></path>\n          <text fill=\"white\" stroke=\"none\" text-anchor=\"middle\" font-size=\"10px\" font-family=\"sans-serif\" x=\"") + str((ps[i] if i >= 0 and i < len(ps) else None).x)) + "\" y=\"") + str((((ps[i] if i >= 0 and i < len(ps) else None).y + 5)))) + "\">") + HxOverrides.stringOrNull(HxOverrides.arrayGet(values, i))) + "</text>\n        </g>\n      ")
             groups = (("null" if groups is None else groups) + ("null" if g is None else g))
-        output = (((((((("\n      <svg viewBox=\"0 0 " + str(300)) + " ") + str(300)) + "\" preserveAspectRatio=\"xMinYMin meet\" style=\"display: inline-block; position: absolute; top: 0px; left: 0px;\">\n        ") + ("null" if mask is None else mask)) + "\n        ") + ("null" if groups is None else groups)) + "\n      </svg>\n    ")
+        output = (((((((("\n      <svg viewBox=\"0 0 " + str(300)) + " ") + str(300)) + "\" preserveAspectRatio=\"xMinYMin meet\">\n        ") + ("null" if mask is None else mask)) + "\n        ") + ("null" if groups is None else groups)) + "\n      </svg>\n    ")
         return output
 
 
@@ -846,7 +846,7 @@ class _HxException(Exception):
 class HxOverrides:
     _hx_class_name = "HxOverrides"
     __slots__ = ()
-    _hx_statics = ["eq", "stringOrNull"]
+    _hx_statics = ["eq", "stringOrNull", "arrayGet"]
 
     @staticmethod
     def eq(a,b):
@@ -860,6 +860,17 @@ class HxOverrides:
             return "null"
         else:
             return s
+
+    @staticmethod
+    def arrayGet(a,i):
+        if isinstance(a,list):
+            x = a
+            if ((i > -1) and ((i < len(x)))):
+                return x[i]
+            else:
+                return None
+        else:
+            return a[i]
 
 
 class HxString:
