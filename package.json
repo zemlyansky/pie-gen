@@ -7,8 +7,13 @@
     "test": "test"
   },
   "scripts": {
+    "build": "haxe build.hxml",
+    "watch": "nodemon --exec \"haxe build.hxml\" --ext \"hx\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Anton Zemlyansky",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
 }

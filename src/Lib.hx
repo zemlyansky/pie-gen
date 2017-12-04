@@ -95,8 +95,8 @@ class PieChartGen {
   : Color
   {
     var cleanHex = hex
-      .substring(hex.indexOf('#') + 1, hex.length)
-      .split('');
+        .substring(hex.indexOf('#') + 1, hex.length)
+        .split('');
     var color: Color = {
       r: Std.parseInt('0x' + cleanHex[0] + cleanHex[1]),
       g: Std.parseInt('0x' + cleanHex[2] + cleanHex[3]),
@@ -124,7 +124,7 @@ class PieChartGen {
    */
   private static function calculateColors
   (
-    baseColors: Array<String>, 
+    baseColors: Array<Dynamic>,
     valuesLength: Int
   )
   : Array<Color>
@@ -132,7 +132,7 @@ class PieChartGen {
     var rgbColors = baseColors.map(function (c) return hexToTriad(c));
     var newColors = [];
 
-    for (i in 0...(valuesLength - 1)) {
+    for (i in 0...valuesLength) {
       var colorPair = (i * (baseColors.length - 1) / (valuesLength - 1));
       var colorPairNumber = Math.floor(colorPair);
       var colorPairShift = colorPair - colorPairNumber;
@@ -152,6 +152,9 @@ class PieChartGen {
     return newColors;
   }
 
+  /**
+   * Exported function
+   */
   @:expose('create')
   public static function create
   (
@@ -160,14 +163,28 @@ class PieChartGen {
   )
   : String
   {
-    var colors: Array<Dynamic> = [];
-
+    // var colors: Array<Dynamic> = [];
     // Convert native PHP arrays to HAXE types
     #if php
       values = php.Lib.toHaxeArray(values);
-      //params = php.Lib.objectOfAssociativeArray(params);
-      var newparams = php.Lib.hashOfAssociativeArray(params);
-      trace(newparams.colors);
+      var paramsMap = php.Lib.hashOfAssociativeArray(params);
+      var newParams: Dynamic = {};
+      for (key in paramsMap.keys()) {
+        var value: Dynamic = paramsMap.get(key);
+        if (key == 'colors') {
+          value = php.Lib.toHaxeArray(value); 
+        }
+        Reflect.setField(newParams, key, value);
+      }
+      params = newParams;
+      //params.colors = php.Lib.toHaxeArray(params.colors);
+      //trace('params:');
+      //params = {
+      //  innerRadiusSize: tempparams['innerRadiusSize'],
+      //  colors: php.Lib.toHaxeArray(tempparams['colors'])
+      //}
+      // params = php.Lib.hashOfAssociativeArray(params);
+      // trace(params.colors);
       //  .map(function (c) return '' + c);
     #end
     // Convert native Python dict to HAXE object
@@ -178,19 +195,19 @@ class PieChartGen {
     var mask: String = '
       <mask id="donut-mask">
         <rect width="100%" height="100%" fill="white"></rect>
-        <circle r=${RADIUS * params.innerRadiusSize} cx=${SIZE / 2} cy=${SIZE / 2} fill="black"></circle>
+        <circle r="${RADIUS * params.innerRadiusSize}" cx="${SIZE / 2}" cy="${SIZE / 2}" fill="black"></circle>
       </mask>
     ';
 
     var groups: String = '';
-//    var ds: Array<String> = calculateArcs(normalizeValues(values));
-//    var ps: Array<Point> = calculateMiddlePoints(normalizeValues(values), params.innerRadiusSize);
-//    var newColors: Array<Color> = calculateColors(colors, values.length);
+    var ds: Array<String> = calculateArcs(normalizeValues(values));
+    var ps: Array<Point> = calculateMiddlePoints(normalizeValues(values), params.innerRadiusSize);
+    var cs: Array<Color> = calculateColors(params.colors, values.length);
     for (i in 0...values.length) {
       var g: String = '
         <g>
-          <path mask="url(#donut-mask)"></path>
-          <text fill="white" stroke="none" text-anchor="middle" font-size="10px" font-family="sans-serif"></text>
+          <path mask="url(#donut-mask)" fill="rgb(${cs[i].r}, ${cs[i].g}, ${cs[i].b})" stroke="rgb(${cs[i].r}, ${cs[i].g}, ${cs[i].b})" d="${ds[i]}"></path>
+          <text fill="white" stroke="none" text-anchor="middle" font-size="10px" font-family="sans-serif" x="${ps[i].x}" y="${ps[i].y + 5}"></text>
         </g>
       ';
       groups += g;
