@@ -6,3 +6,5 @@ Lib
 -js dist/pie-gen-js/pie-gen.js
 --next
 -php dist/pie-gen-php/
+--next
+-cpp dist/pie-gen-cpp/
